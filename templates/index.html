@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Twitter Sentiment Analysis</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #333638;
+      }
+      .container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #1d1f20;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        text-align: center;
+        color: #fff;
+      }
+      form {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+      }
+      label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: rgb(26, 255, 0);
+        font-family: Arial, sans-serif;
+      }
+      textarea {
+        width: 100%;
+        height: 100px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        resize: none;
+        font-family: Arial, sans-serif;
+        background-color: #1d1f20;
+        color: #fff;
+        font-size: 1rem;
+      }
+      button {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      .result {
+        margin-top: 20px;
+        padding: 20px;
+        /* background-color: #f9f9f9; */
+        border: 1px solid #ff0000;
+        border-radius: 10px;
+        color: white;
+      }
+      .result p {
+        margin: 0;
+      }
+      .positive {
+        color: green;
+      }
+      .negative {
+        color: red;
+      }
+      .neutral {
+        color: gray;
+      }
+      .irrelevant {
+        color: blue;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Twitter Sentiment Analysis</h1>
+      <form id="sentimentForm">
+        <label for="tweet">Enter a tweet:</label>
+        <textarea id="tweet" name="tweet" rows="4" cols="50"></textarea>
+        <button type="submit">Analyze</button>
+      </form>
+      <div id="result" class="result" style="display: none"></div>
+    </div>
+
+    <script>
+      document
+        .getElementById("sentimentForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          var tweet = document.getElementById("tweet").value;
+          fetch("/predict", {
+            method: "POST",
+            body: JSON.stringify({ tweet: tweet }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              var resultDiv = document.getElementById("result");
+              resultDiv.style.display = "block";
+              resultDiv.innerHTML =
+                "<p><strong>You entered:</strong> " + tweet + "</p>";
+              resultDiv.innerHTML +=
+                "<p><strong>Sentiment:</strong> <span class='" +
+                data.sentiment +
+                "'>" +
+                data.sentiment +
+                "</span></p>";
+            })
+            .catch((error) => console.error("Error:", error));
+        });
+    </script>
+  </body>
+</html>
